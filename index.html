@@ -1,0 +1,675 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAPPU ACADEMY | Science Learning</title>
+<style>
+:root{
+ --bg:#0b1020;--panel:#141d32;--panel2:#1a2740;
+ --text:#f4f7ff;--muted:#9eacc5;--blue:#5795ff;
+ --cyan:#35d6cf;--purple:#a68bff;--green:#55d99b;
+ --border:#283754;--red:#ff7185;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:var(--bg);color:var(--text);
+ font-family:Arial,Helvetica,sans-serif;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.layout{display:flex;min-height:100vh}
+.sidebar{
+ width:245px;background:#10182a;border-right:1px solid var(--border);
+ padding:24px 16px;position:fixed;top:0;bottom:0;overflow:auto;
+}
+.logo{font-size:21px;font-weight:800;color:#fff;margin-bottom:6px}
+.logo span{color:var(--cyan)}
+.tagline{font-size:12px;color:var(--muted);margin-bottom:30px}
+.nav-title{font-size:11px;color:#71829e;margin:22px 10px 8px}
+.navbtn{
+ display:flex;gap:12px;align-items:center;width:100%;
+ padding:12px;border:0;background:transparent;color:#aebbd2;
+ border-radius:10px;text-align:left;margin:4px 0;font-size:14px;
+}
+.navbtn.active,.navbtn:hover{background:#203453;color:white}
+.main{margin-left:245px;width:calc(100% - 245px);padding:28px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:25px}
+.topbar h2{margin:0;font-size:22px}
+.pill{background:#172e35;color:var(--cyan);padding:8px 12px;border-radius:20px;font-size:12px}
+.page{display:none}
+.page.active{display:block;animation:show .3s ease}
+@keyframes show{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hero{
+ background:linear-gradient(115deg,#193b67,#26366c 55%,#34255e);
+ padding:30px;border-radius:20px;position:relative;overflow:hidden;
+ border:1px solid #40598d;margin-bottom:22px;
+}
+.hero:after{content:"🧬";position:absolute;right:35px;top:20px;font-size:95px;opacity:.2}
+.hero h1{font-size:30px;margin:0 0 10px}
+.hero p{color:#d0dcf5;max-width:580px;line-height:1.7}
+.btn{
+ border:0;border-radius:9px;padding:11px 16px;
+ background:var(--blue);color:white;font-weight:600;
+}
+.btn.secondary{background:#293a57}
+.btn.green{background:#218b69}
+.btn.red{background:#a94359}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:18px 0}
+.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{
+ background:var(--panel);border:1px solid var(--border);
+ border-radius:15px;padding:19px;min-width:0;
+}
+.card h3{margin:0 0 10px;font-size:16px}
+.muted{color:var(--muted);font-size:13px;line-height:1.6}
+.subject-icon{font-size:30px;margin-bottom:12px}
+.stat{font-size:27px;font-weight:800;margin:8px 0}
+.progress{height:8px;background:#293750;border-radius:20px;overflow:hidden;margin:12px 0}
+.progress span{display:block;height:100%;background:var(--cyan);border-radius:20px}
+.section-title{font-size:19px;margin:27px 0 14px}
+.lesson-list{display:grid;gap:10px}
+.lesson{
+ display:flex;justify-content:space-between;align-items:center;
+ gap:10px;background:var(--panel);border:1px solid var(--border);
+ padding:15px;border-radius:12px;
+}
+.lesson strong{display:block;margin-bottom:5px}
+.lesson button{white-space:nowrap}
+.badge{font-size:11px;color:var(--cyan);background:#19383e;padding:5px 8px;border-radius:15px}
+.contentbox{
+ background:var(--panel);border:1px solid var(--border);
+ padding:22px;border-radius:15px;line-height:1.8;
+}
+.contentbox h2{color:var(--cyan)}
+.contentbox h3{color:#c7d8ff;margin-top:23px}
+.sindhi{
+ background:#192d3b;border-left:3px solid var(--cyan);
+ padding:12px 15px;border-radius:8px;margin:12px 0;
+ color:#d7f3f0;
+}
+.formula{
+ background:#0b1426;padding:15px;border-radius:10px;
+ font-size:20px;text-align:center;color:#a8d9ff;margin:12px 0;
+}
+input,select,textarea{
+ background:#0c1527;border:1px solid var(--border);
+ color:white;padding:12px;border-radius:9px;width:100%;margin:7px 0;
+}
+.question{padding:17px;background:#111c30;border-radius:12px;margin:12px 0}
+.option{
+ display:block;text-align:left;padding:12px;margin:8px 0;
+ background:#1b2a42;border:1px solid #30435f;border-radius:9px;
+ color:white;width:100%;
+}
+.option:hover{border-color:var(--cyan)}
+.result{margin-top:12px;color:var(--green);font-weight:bold}
+.timer{text-align:center;padding:25px}
+.timer-number{font-size:55px;font-weight:bold;color:var(--cyan);margin:20px}
+.note{padding:14px;background:#17243a;border-radius:10px;margin:10px 0}
+footer{text-align:center;color:#687c9c;font-size:12px;padding:35px}
+.mobile-menu{display:none}
+@media(max-width:850px){
+ .sidebar{width:215px}
+ .main{margin-left:215px;width:calc(100% - 215px);padding:20px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:650px){
+ .sidebar{
+  display:none;position:fixed;z-index:30;width:260px;
+  box-shadow:0 0 40px #000;
+ }
+ .sidebar.open{display:block}
+ .main{margin:0;width:100%;padding:16px}
+ .mobile-menu{display:inline-block}
+ .grid,.grid.two{grid-template-columns:1fr}
+ .hero{padding:22px}
+ .hero h1{font-size:25px}
+ .hero:after{font-size:65px;right:10px}
+ .topbar h2{font-size:18px}
+ .lesson{align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+ <div class="logo">KAPPU <span>ACADEMY</span></div>
+ <div class="tagline">LEARN • UNDERSTAND • GROW</div>
+
+ <div class="nav-title">MAIN MENU</div>
+ <button class="navbtn active" onclick="showPage('dashboard',this)">🏠 Dashboard</button>
+ <button class="navbtn" onclick="showPage('subjects',this)">📚 All Subjects</button>
+ <button class="navbtn" onclick="showPage('lessons',this)">📖 Lessons</button>
+ <button class="navbtn" onclick="showPage('quiz',this)">🧠 Practice MCQs</button>
+ <button class="navbtn" onclick="showPage('notes',this)">📝 My Notes</button>
+ <div class="nav-title">TOOLS</div>
+ <button class="navbtn" onclick="showPage('timer',this)">⏱ Study Timer</button>
+ <button class="navbtn" onclick="showPage('progress',this)">📊 My Progress</button>
+ <button class="navbtn" onclick="showPage('about',this)">ℹ️ About Academy</button>
+ <div class="nav-title">LEARNING LANGUAGE</div>
+ <select id="language" onchange="changeLanguage()">
+  <option value="both">English + Sindhi</option>
+  <option value="en">English only</option>
+  <option value="sd">Sindhi only</option>
+ </select>
+</aside>
+
+<main class="main">
+ <div class="topbar">
+  <div style="display:flex;align-items:center;gap:12px">
+   <button class="btn secondary mobile-menu" onclick="toggleMenu()">☰</button>
+   <h2 id="pageTitle">Dashboard</h2>
+  </div>
+  <div class="pill">🎓 STUDENT MODE</div>
+ </div>
+
+<!-- DASHBOARD -->
+<section class="page active" id="dashboard">
+ <div class="hero">
+  <h1>Welcome to KAPPU ACADEMY 👋</h1>
+  <p>Your science journey starts here. Learn Physics, Chemistry and Biology from absolute zero. One lesson at a time.</p>
+  <button class="btn" onclick="showPage('subjects')">Start Learning →</button>
+ </div>
+
+ <div class="grid">
+  <div class="card">
+   <div class="subject-icon">📚</div>
+   <div class="muted">Total Subjects</div>
+   <div class="stat">03</div>
+   <div class="muted">Physics • Chemistry • Biology</div>
+  </div>
+  <div class="card">
+   <div class="subject-icon">📖</div>
+   <div class="muted">Lessons Completed</div>
+   <div class="stat" id="doneCount">0</div>
+   <div class="muted">Keep learning every day</div>
+  </div>
+  <div class="card">
+   <div class="subject-icon">🧠</div>
+   <div class="muted">MCQs Attempted</div>
+   <div class="stat" id="quizCount">0</div>
+   <div class="muted">Practice makes progress</div>
+  </div>
+ </div>
+
+ <h3 class="section-title">Your Classrooms</h3>
+ <div class="grid">
+  <div class="card">
+   <div class="subject-icon">⚛️</div>
+   <h3>Physics</h3>
+   <p class="muted">Understand matter, energy, motion and the laws of nature.</p>
+   <button class="btn" onclick="openSubject('physics')">Open Physics</button>
+  </div>
+  <div class="card">
+   <div class="subject-icon">🧪</div>
+   <h3>Chemistry</h3>
+   <p class="muted">Explore atoms, elements, compounds and chemical reactions.</p>
+   <button class="btn" onclick="openSubject('chemistry')">Open Chemistry</button>
+  </div>
+  <div class="card">
+   <div class="subject-icon">🧬</div>
+   <h3>Biology</h3>
+   <p class="muted">Discover living organisms, cells, organs and life processes.</p>
+   <button class="btn" onclick="openSubject('biology')">Open Biology</button>
+  </div>
+ </div>
+ <div class="card">
+  <h3>💡 Today's Study Advice</h3>
+  <p class="muted">Do not memorize everything at once. First understand the concept, then write it in your own words, and finally solve questions.</p>
+ </div>
+</section>
+
+<!-- SUBJECTS -->
+<section class="page" id="subjects">
+ <div class="hero">
+  <h1>Choose Your Subject</h1>
+  <p>Start from the basics. No previous knowledge required.</p>
+ </div>
+ <div class="grid">
+  <div class="card">
+   <div class="subject-icon">⚛️</div><h3>Physics</h3>
+   <p class="muted">The study of matter, energy, force and motion.</p>
+   <button class="btn" onclick="openSubject('physics')">Explore</button>
+  </div>
+  <div class="card">
+   <div class="subject-icon">🧪</div><h3>Chemistry</h3>
+   <p class="muted">The study of substances and how they change.</p>
+   <button class="btn" onclick="openSubject('chemistry')">Explore</button>
+  </div>
+  <div class="card">
+   <div class="subject-icon">🧬</div><h3>Biology</h3>
+   <p class="muted">The scientific study of living things.</p>
+   <button class="btn" onclick="openSubject('biology')">Explore</button>
+  </div>
+ </div>
+</section>
+
+<!-- LESSONS -->
+<section class="page" id="lessons">
+ <div class="card">
+  <h3>📖 Beginner Learning Path</h3>
+  <p class="muted">Select a subject to see its available lessons.</p>
+  <select id="lessonSubject" onchange="renderLessons()">
+   <option value="physics">Physics</option>
+   <option value="chemistry">Chemistry</option>
+   <option value="biology">Biology</option>
+  </select>
+ </div>
+ <div class="lesson-list" id="lessonList" style="margin-top:15px"></div>
+</section>
+
+<!-- LESSON READER -->
+<section class="page" id="reader">
+ <button class="btn secondary" onclick="showPage('lessons')">← Back to lessons</button>
+ <div class="contentbox" id="lessonContent" style="margin-top:15px"></div>
+ <button class="btn green" id="completeBtn" onclick="completeLesson()">✓ Mark as completed</button>
+</section>
+
+<!-- QUIZ -->
+<section class="page" id="quiz">
+ <div class="hero">
+  <h1>Knowledge Check 🧠</h1>
+  <p>Test your understanding with beginner science MCQs.</p>
+ </div>
+ <div class="card">
+  <select id="quizSubject" onchange="loadQuiz()">
+   <option value="physics">Physics</option>
+   <option value="chemistry">Chemistry</option>
+   <option value="biology">Biology</option>
+  </select>
+  <div id="quizArea"></div>
+  <button class="btn" onclick="checkQuiz()">Check Answers</button>
+  <div id="quizResult" class="result"></div>
+ </div>
+</section>
+
+<!-- NOTES -->
+<section class="page" id="notes">
+ <div class="card">
+  <h3>📝 My Personal Notes</h3>
+  <p class="muted">Write your own science notes. They are saved in this browser on this device.</p>
+  <input id="noteTitle" placeholder="Note title">
+  <select id="noteSubject">
+   <option>Physics</option><option>Chemistry</option><option>Biology</option>
+  </select>
+  <textarea id="noteText" rows="6" placeholder="Write your notes here..."></textarea>
+  <button class="btn" onclick="saveNote()">Save Note</button>
+  <div id="noteList"></div>
+ </div>
+</section>
+
+<!-- TIMER -->
+<section class="page" id="timer">
+ <div class="card timer">
+  <h3>⏱ Focus Study Timer</h3>
+  <p class="muted">Study with focus. Take breaks when needed.</p>
+  <div class="timer-number" id="clock">25:00</div>
+  <button class="btn" onclick="startTimer()">Start</button>
+  <button class="btn secondary" onclick="pauseTimer()">Pause</button>
+  <button class="btn red" onclick="resetTimer()">Reset</button>
+  <p id="timerStatus" class="muted">Ready to focus?</p>
+ </div>
+</section>
+
+<!-- PROGRESS -->
+<section class="page" id="progress">
+ <div class="hero">
+  <h1>Your Learning Progress 📊</h1>
+  <p>Every completed lesson is a step forward.</p>
+ </div>
+ <div class="card">
+  <h3>Completed Lessons</h3>
+  <div class="stat" id="progressNumber">0</div>
+  <div class="progress"><span id="progressBar" style="width:0%"></span></div>
+  <p class="muted" id="progressText">You have just started your journey.</p>
+  <button class="btn secondary" onclick="resetProgress()">Reset Progress</button>
+ </div>
+</section>
+
+<!-- ABOUT -->
+<section class="page" id="about">
+ <div class="card">
+  <h1>KAPPU ACADEMY 🎓</h1>
+  <p>Learn science from zero, step by step.</p>
+  <h3>Our learning method</h3>
+  <p class="muted">1. Understand the English definition.</p>
+  <p class="muted">2. Read its Sindhi explanation.</p>
+  <p class="muted">3. Learn important scientific terms.</p>
+  <p class="muted">4. Practice with MCQs.</p>
+  <p class="muted">5. Revise and write your own notes.</p>
+  <div class="sindhi">علم سکڻ لاءِ وقت ڏيو. هر ڏينهن ٿورو پڙهڻ به وڏي ڪاميابي آهي.</div>
+  <p class="muted">This is an offline starter learning website. Lessons can be expanded as you study.</p>
+ </div>
+</section>
+
+<footer>KAPPU ACADEMY • Learn Something New Every Day</footer>
+</main>
+</div>
+
+<script>
+const lessons={
+physics:[
+{title:"Introduction to Science",time:"10 min",body:`
+<h2>Lesson 1: Introduction to Science</h2>
+<h3>What is Science?</h3>
+<p>Science is the systematic study of the natural world through observation, experiments and evidence.</p>
+<div class="sindhi">سائنس قدرتي دنيا جو منظم مطالعو آهي، جنهن ۾ مشاهدو، تجربا ۽ ثبوت استعمال ٿيندا آهن.</div>
+<h3>Basic Scientific Method</h3>
+<p><b>1. Observation:</b> Carefully noticing something.</p>
+<div class="sindhi">مشاهدو: ڪنهن شيءِ کي غور سان ڏسڻ ۽ ان بابت ڄاڻ حاصل ڪرڻ.</div>
+<p><b>2. Collecting Information:</b> Gathering useful facts and data.</p>
+<div class="sindhi">معلومات گڏ ڪرڻ: لاڳاپيل حقيقتون ۽ ڄاڻ گڏ ڪرڻ.</div>
+<p><b>3. Mathematical Representation:</b> Using numbers, equations and graphs.</p>
+<div class="sindhi">رياضياتي نمائندگي: انگن، مساواتن ۽ گرافن ذريعي بيان ڪرڻ.</div>
+<p><b>4. Experiment:</b> Testing an idea under controlled conditions.</p>
+<div class="sindhi">تجربو: ڪنهن خيال کي جانچڻ لاءِ عملي آزمائش ڪرڻ.</div>
+<p><b>5. Conclusion:</b> Explaining what the results show.</p>
+<div class="sindhi">نتيجو: تجربن مان حاصل ٿيل نتيجن جي وضاحت ڪرڻ.</div>
+<h3>Remember</h3><p>Science depends on evidence, not just guesses.</p>
+<div class="sindhi">سائنس جو بنياد ثبوت آهي، رڳو اندازو نه.</div>`},
+{title:"Introduction to Physics",time:"12 min",body:`
+<h2>Lesson 2: What is Physics?</h2>
+<p>Physics is the branch of science that studies matter, energy, motion, force, space and time.</p>
+<div class="sindhi">فزڪس سائنس جي اها شاخ آهي جيڪا مادو، توانائي، حرڪت، قوت، خلا ۽ وقت جو مطالعو ڪري ٿي.</div>
+<h3>Examples of Physics</h3>
+<p>• A ball falling to the ground.</p><p>• Light travelling from the Sun.</p><p>• Sound produced by a speaker.</p><p>• A moving bicycle.</p>
+<div class="sindhi">مثال: بال جو هيٺ ڪرڻ، سج جي روشني، آواز ۽ سائيڪل جي حرڪت فزڪس جا مثال آهن.</div>
+<h3>Main branches</h3>
+<p>Mechanics, Optics, Thermodynamics, Electricity and Magnetism.</p>
+<div class="sindhi">مکيه شاخون: ميڪينڪس، روشني، حرارت، بجلي ۽ مقناطيسيت.</div>`},
+{title:"Matter and Its States",time:"12 min",body:`
+<h2>Lesson 3: Matter</h2>
+<p>Matter is anything that has mass and occupies space.</p>
+<div class="sindhi">مادو هر اها شيءِ آهي جنهن جو وزن هجي ۽ جيڪا جاءِ والاري.</div>
+<h3>Three common states of matter</h3>
+<p><b>Solid:</b> Has a fixed shape and volume. Example: Ice.</p>
+<div class="sindhi">ٺوس: جنهن جي شڪل ۽ حجم مقرر هجي، مثال برف.</div>
+<p><b>Liquid:</b> Has fixed volume but takes the shape of its container. Example: Water.</p>
+<div class="sindhi">سيال: جنهن جو حجم مقرر هجي پر شڪل برتن مطابق هجي، مثال پاڻي.</div>
+<p><b>Gas:</b> Has no fixed shape or volume. Example: Air.</p>
+<div class="sindhi">گئس: جنهن جي شڪل ۽ حجم مقرر نه هجي، مثال هوا.</div>`},
+{title:"Physical Quantities",time:"10 min",body:`
+<h2>Lesson 4: Physical Quantities</h2>
+<p>A physical quantity is a property that can be measured.</p>
+<div class="sindhi">طبيعي مقدار اها خاصيت آهي جنهن کي ماپي سگهجي ٿو.</div>
+<p>Examples: Length, mass, time and temperature.</p>
+<h3>SI Units</h3>
+<p>Length = metre (m)</p><p>Mass = kilogram (kg)</p><p>Time = second (s)</p><p>Temperature = kelvin (K)</p>
+<div class="sindhi">ماپ جون معياري SI ايڪايون: ميٽر، ڪلوگرام، سيڪنڊ ۽ ڪيلون.</div>`},
+{title:"Measurement",time:"15 min",body:`
+<h2>Lesson 5: Measurement</h2>
+<p>Measurement is the process of comparing an unknown quantity with a standard unit.</p>
+<div class="sindhi">ماپڻ جو مطلب ڪنهن مقدار جو معياري ايڪي سان مقابلو ڪرڻ آهي.</div>
+<h3>Examples</h3>
+<p>We measure length using a ruler or measuring tape.</p>
+<p>We measure time using a clock.</p>
+<p>We measure mass using a balance.</p>
+<div class="sindhi">ڊيگهه لاءِ اسڪيل، وقت لاءِ گهڙي ۽ وزن لاءِ ترازو استعمال ڪندا آهيون.</div>`}
+],
+chemistry:[
+{title:"Introduction to Chemistry",time:"10 min",body:`
+<h2>Lesson 1: Introduction to Chemistry</h2>
+<p>Chemistry is the branch of science that studies matter, its composition, structure, properties and changes.</p>
+<div class="sindhi">ڪيمسٽري سائنس جي اها شاخ آهي جيڪا مادي جي بناوت، جوڙجڪ، خاصيتن ۽ تبديلين جو مطالعو ڪري ٿي.</div>
+<h3>Examples</h3><p>Rusting of iron, cooking food and burning wood.</p>
+<div class="sindhi">مثال: لوهه کي زنگ لڳڻ، کاڌو پچائڻ ۽ ڪاٺ جو سڙڻ.</div>`},
+{title:"Matter and Classification",time:"12 min",body:`
+<h2>Lesson 2: Matter</h2>
+<p>Matter is anything that has mass and occupies space.</p>
+<div class="sindhi">مادو هر اها شيءِ آهي جنهن جو وزن هجي ۽ جيڪا جاءِ والاري.</div>
+<h3>Classification</h3>
+<p>Matter can be classified as pure substances and mixtures.</p>
+<p><b>Pure substance:</b> Has a fixed composition.</p>
+<div class="sindhi">خالص مادو: جنهن جي ڪيميائي بناوت مقرر هجي.</div>
+<p><b>Mixture:</b> Contains two or more substances physically combined.</p>
+<div class="sindhi">آميزش: ٻن يا وڌيڪ مادن جو گڏيل ميلاپ.</div>`},
+{title:"Atoms and Molecules",time:"15 min",body:`
+<h2>Lesson 3: Atoms and Molecules</h2>
+<p>An atom is the smallest unit of an element that retains its chemical identity.</p>
+<div class="sindhi">ايٽم ڪنهن عنصر جو ننڍڙو بنيادي ذرڙو آهي جيڪو ان عنصر جي ڪيميائي سڃاڻپ برقرار رکي ٿو.</div>
+<p>A molecule consists of two or more atoms chemically bonded together.</p>
+<div class="sindhi">ماليڪيول ٻن يا وڌيڪ ايٽمن جي ڪيميائي ڳانڍاپي سان ٺهي ٿو.</div>
+<h3>Examples</h3>
+<p>O₂ = Oxygen molecule</p><p>H₂O = Water molecule</p>`},
+{title:"Elements and Compounds",time:"12 min",body:`
+<h2>Lesson 4: Elements and Compounds</h2>
+<p>An element contains only one type of atom.</p>
+<div class="sindhi">عنصر ۾ صرف هڪ قسم جا ايٽم هوندا آهن.</div>
+<p>A compound contains two or more elements chemically combined in a fixed ratio.</p>
+<div class="sindhi">مرڪب ٻن يا وڌيڪ عنصرن جي ڪيميائي ميلاپ سان مقرر نسبت ۾ ٺهي ٿو.</div>
+<h3>Examples</h3><p>Iron (Fe) is an element.</p><p>Water (H₂O) is a compound.</p>`},
+{title:"Introduction to Periodic Table",time:"15 min",body:`
+<h2>Lesson 5: Periodic Table</h2>
+<p>The periodic table is an arrangement of chemical elements according to their atomic numbers and properties.</p>
+<div class="sindhi">دوري جدول عنصرن کي انهن جي ائٽمي نمبر ۽ خاصيتن مطابق ترتيب ڏئي ٿو.</div>
+<h3>Important terms</h3>
+<p><b>Group:</b> Vertical column.</p>
+<p><b>Period:</b> Horizontal row.</p>
+<div class="sindhi">گروپ عمودي ڪالم آهي ۽ پيرڊ افقي قطار آهي.</div>`}
+],
+biology:[
+{title:"Introduction to Biology",time:"10 min",body:`
+<h2>Lesson 1: Introduction to Biology</h2>
+<p>Biology is the scientific study of life and living organisms.</p>
+<div class="sindhi">بايولاجي زندگي ۽ جاندارن جو سائنسي مطالعو آهي.</div>
+<h3>Examples of living organisms</h3>
+<p>Humans, animals, plants, bacteria and fungi.</p>
+<div class="sindhi">انسان، جانور، ٻوٽا، بيڪٽيريا ۽ فنگس جاندارن جا مثال آهن.</div>
+<h3>Branches of Biology</h3>
+<p>Botany: Study of plants.</p><p>Zoology: Study o
+f animals.</p><p>Microbiology: Study of microorganisms.</p>
+<div class="sindhi">بوٽني ٻوٽن جو مطالعو، زولاجي جانورن جو مطالعو ۽ مائڪروبايولاجي ننڍن جاندارن جو مطالعو آهي.</div>`},
+{title:"Characteristics of Living Things",time:"12 min",body:`
+<h2>Lesson 2: Living Things</h2>
+<p>Living organisms show several characteristics.</p>
+<p><b>1. Nutrition:</b> Taking in food or nutrients.</p>
+<p><b>2. Respiration:</b> Releasing energy from food.</p>
+<p><b>3. Growth:</b> Increasing in size or development.</p>
+<p><b>4. Reproduction:</b> Producing offspring.</p>
+<p><b>5. Excretion:</b> Removing waste products.</p>
+<p><b>6. Response:</b> Reacting to changes in the environment.</p>
+<div class="sindhi">جاندارن جون خاصيتون: خوراڪ حاصل ڪرڻ، ساهه کڻڻ، واڌ، نسل وڌائڻ، فضول مادا خارج ڪرڻ ۽ ماحول جي تبديلين جو جواب ڏيڻ.</div>`},
+{title:"Cell: Basic Unit of Life",time:"15 min",body:`
+<h2>Lesson 3: The Cell</h2>
+<p>The cell is the basic structural and functional unit of life.</p>
+<div class="sindhi">سيل زندگي جو بنيادي بناوتي ۽ فعلي ايڪو آهي.</div>
+<h3>Basic cell structures</h3>
+<p><b>Cell membrane:</b> Controls what enters and leaves the cell.</p>
+<p><b>Cytoplasm:</b> Jelly-like material where many cell activities occur.</p>
+<p><b>Nucleus:</b> Contains genetic material and helps control cell activities.</p>
+<div class="sindhi">سيل جھلي شين جي اچ وڃ کي ڪنٽرول ڪري ٿي، سائٽوپلازم ۾ ڪيترائي عمل ٿين ٿا ۽ نيوڪليس ۾ جينياتي مادو هوندو آهي.</div>`},
+{title:"Plant and Animal Cells",time:"12 min",body:`
+<h2>Lesson 4: Plant and Animal Cells</h2>
+<p>Plant cells usually have a cell wall, chloroplasts and a large central vacuole.</p>
+<p>Animal cells do not have a cell wall or chloroplasts.</p>
+<div class="sindhi">ٻوٽن جي سيل ۾ عام طور سيل وال، ڪلورپلاسٽ ۽ وڏو ويڪيول هوندو آهي. جانورن جي سيل ۾ سيل وال ۽ ڪلورپلاسٽ نه هوندا آهن.</div>
+<h3>Remember</h3>
+<p>Both plant and animal cells have a cell membrane, cytoplasm and nucleus in typical examples.</p>`},
+{title:"Tissues and Organs",time:"12 min",body:`
+<h2>Lesson 5: Tissues and Organs</h2>
+<p>A tissue is a group of similar cells working together to perform a function.</p>
+<div class="sindhi">ٽشو هڪجهڙن سيلن جو گروپ آهي جيڪي گڏجي هڪ ڪم ڪن ٿا.</div>
+<p>An organ is made of different tissues working together.</p>
+<div class="sindhi">عضوو مختلف ٽشوز جي گڏيل ڪم سان ٺهي ٿو.</div>
+<p>Examples: Heart, lungs, stomach and leaves.</p>`}
+]
+};
+
+let currentSubject="physics";
+let currentLesson=0;
+let completed=JSON.parse(localStorage.getItem("academyCompleted")||"[]");
+let notes=JSON.parse(localStorage.getItem("academyNotes")||"[]");
+let attempted=Number(localStorage.getItem("academyQuizCount")||0);
+let lang="both";
+
+function showPage(id,btn){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));
+ if(btn)btn.classList.add('active');
+ else{
+  let nav=[...document.querySelectorAll('.navbtn')].find(b=>b.getAttribute('onclick')?.includes("'"+id+"'"));
+  if(nav)nav.classList.add('active');
+ }
+ const names={dashboard:"Dashboard",subjects:"All Subjects",lessons:"Lessons",reader:"Lesson Reader",quiz:"Practice MCQs",notes:"My Notes",timer:"Study Timer",progress:"My Progress",about:"About Academy"};
+ document.getElementById('pageTitle').textContent=names[id]||id;
+ document.getElementById('sidebar').classList.remove('open');
+ updateStats();
+}
+function toggleMenu(){document.getElementById('sidebar').classList.toggle('open')}
+function openSubject(s){
+ currentSubject=s;
+ document.getElementById('lessonSubject').value=s;
+ renderLessons();
+ showPage('lessons');
+}
+function renderLessons(){
+ currentSubject=document.getElementById('lessonSubject').value;
+ let list=lessons[currentSubject];
+ document.getElementById('lessonList').innerHTML=list.map((l,i)=>`
+ <div class="lesson">
+ <div><strong>${i+1}. ${l.title}</strong><span class="muted">${l.time} • ${completed.includes(currentSubject+"-"+i)?"Completed ✓":"Not completed"}</span></div>
+ <button class="btn" onclick="openLesson(${i})">Study →</button>
+ </div>`).join('');
+}
+function openLesson(i){
+ currentLesson=i;
+ let l=lessons[currentSubject][i];
+ document.getElementById('lessonContent').innerHTML=l.body;
+ document.getElementById('completeBtn').textContent=completed.includes(currentSubject+"-"+i)?"✓ Completed":"✓ Mark as completed";
+ showPage('reader');
+}
+function completeLesson(){
+ let key=currentSubject+"-"+currentLesson;
+ if(!completed.includes(key)){
+  completed.push(key);
+  localStorage.setItem("academyCompleted",JSON.stringify(completed));
+ }
+ document.getElementById('completeBtn').textContent="✓ Completed";
+ updateStats();
+}
+function updateStats(){
+ document.getElementById('doneCount').textContent=completed.length;
+ document.getElementById('quizCount').textContent=attempted;
+ document.getElementById('progressNumber').textContent=completed.length;
+ let total=15;
+ let percent=Math.min(100,Math.round(completed.length/total*100));
+ document.getElementById('progressBar').style.width=percent+"%";
+ document.getElementById('progressText').textContent=percent+"% of the starter lessons completed.";
+}
+function resetProgress(){
+ if(confirm("Reset completed lesson progress?")){
+  completed=[];
+  localStorage.setItem("academyCompleted","[]");
+  updateStats();renderLessons();
+ }
+}
+function changeLanguage(){
+ lang=document.getElementById('language').value;
+ document.querySelectorAll('.sindhi').forEach(el=>{
+  el.style.display=lang==="en"?"none":"block";
+ });
+}
+function saveNote(){
+ let title=document.getElementById('noteTitle').value.trim();
+ let text=document.getElementById('noteText').value.trim();
+ if(!title||!text){alert("Please enter a title and your note.");return}
+ notes.unshift({title,subject:document.getElementById('noteSubject').value,text});
+ localStorage.setItem("academyNotes",JSON.stringify(notes));
+ document.getElementById('noteTitle').value="";
+ document.getElementById('noteText').value="";
+ renderNotes();
+}
+function renderNotes(){
+ document.getElementById('noteList').innerHTML=notes.map((n,i)=>`
+ <div class="note"><b>${n.title}</b> <span class="badge">${n.subject}</span>
+ <p class="muted">${n.text.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</p>
+ <button class="btn red" onclick="deleteNote(${i})">Delete</button></div>`).join('');
+}
+function deleteNote(i){
+ notes.splice(i,1);
+ localStorage.setItem("academyNotes",JSON.stringify(notes));
+ renderNotes();
+}
+
+const questions={
+physics:[
+{q:"What does Physics study?",o:["Only plants","Matter and energy","Only animals","Languages"],a:1,e:"Physics studies matter, energy and their interactions."},
+{q:"What is the SI unit of length?",o:["Kilogram","Second","Metre","Kelvin"],a:2,e:"The SI base unit of length is metre (m)."},
+{q:"Which one is a state of matter?",o:["Solid","Sound","Light","Force"],a:0,e:"Solid is one of the common states of matter."},
+{q:"Which instrument measures time?",o:["Balance","Clock","Ruler","Thermometer"],a:1,e:"A clock measures time."}
+],
+chemistry:[
+{q:"What does Chemistry study?",o:["Matter and its changes","Only stars","Only movement","Only cells"],a:0,e:"Chemistry studies matter, its properties and changes."},
+{q:"What is the chemical formula of water?",o:["CO2","O2","H2O","NaCl"],a:2,e:"Water has the chemical formula H2O."},
+{q:"Which is an element?",o:["Water","Iron","Salt water","Air"],a:1,e:"Iron (Fe) is a chemical element."},
+{q:"What is a molecule?",o:["A group of bonded atoms","A type of energy","A measuring unit","An instrument"],a:0,e:"A molecule contains two or more chemically bonded atoms."}
+],
+biology:[
+{q:"What does Biology study?",o:["Living organisms","Planets","Rocks only","Electricity"],a:0,e:"Biology is the study of life and living organisms."},
+{q:"What is the basic unit of life?",o:["Atom","Cell","Organ","Tissue"],a:1,e:"The cell is the basic structural and functional unit of life."},
+{q:"Which branch studies plants?",o:["Zoology","Physics","Botany","Chemistry"],a:2,e:"Botany is the study of plants."},
+{q:"Which structure contains genetic material in a typical cell?",o:["Nucleus","Cell wall","Vacuole","Ribosome"],a:0,e:"The nucleus contains most of the genetic material in typical eukaryotic cells."}
+]
+};
+function loadQuiz(){
+ let s=document.getElementById('quizSubject').value;
+ let qs=questions[s];
+ document.getElementById('quizArea').innerHTML=qs.map((q,i)=>`
+ <div class="question"><b>${i+1}. ${q.q}</b>
+ ${q.o.map((o,j)=>`<label class="option"><input type="radio" name="q${i}" value="${j}" style="width:auto;margin-right:8px">${o}</label>`).join("")}
+ <div id="explain${i}" class="muted"></div></div>`).join('');
+ document.getElementById('quizResult').textContent="";
+}
+function checkQuiz(){
+ let s=document.getElementById('quizSubject').value;
+ let qs=questions[s],score=0;
+ qs.forEach((q,i)=>{
+  let selected=document.querySelector('input[name="q'+i+'"]:checked');
+  let ex=document.getElementById('explain'+i);
+  if(selected&&Number(selected.value)===q.a)score++;
+  ex.textContent=(selected&&Number(selected.value)===q.a?"Correct! ":"Review: ")+q.e;
+ });
+ attempted+=qs.length;
+ localStorage.setItem("academyQuizCount",attempted);
+ document.getElementById('quizResult').textContent="Your score: "+score+" / "+qs.length;
+ updateStats();
+}
+
+let remaining=25*60,interval=null;
+function showClock(){
+ let m=Math.floor(remaining/60),s=remaining%60;
+ document.getElementById('clock').textContent=String(m).padStart(2,'0')+":"+String(s).padStart(2,'0');
+}
+function startTimer(){
+ if(interval)return;
+ document.getElementById('timerStatus').textContent="Focus time! You can do this.";
+ interval=setInterval(()=>{
+  if(remaining>0){remaining--;showClock()}
+  else{
+   clearInterval(interval);interval=null;
+   document.getElementById('timerStatus').textContent="Session complete! Take a break.";
+   alert("Study session complete!");
+  }
+ },1000);
+}
+function pauseTimer(){
+ clearInterval(interval);interval=null;
+ document.getElementById('timerStatus').textContent="Timer paused.";
+}
+function resetTimer(){
+ pauseTimer();remaining=25*60;showClock();
+ document.getElementById('timerStatus').textContent="Ready to focus?";
+}
+
+renderLessons();
+renderNotes();
+loadQuiz();
+showClock();
+updateStats();
+</script>
+</body>
+</html>
